@@ -1,11 +1,13 @@
-import React, { useState, useCallback, useMemo, FC, lazy, Suspense } from 'react';
+import React, { useState, useCallback, useMemo, FC, lazy, Suspense, useRef } from 'react';
 import { CONDITIONS } from '../data/conditions';
 import { Condition } from './types';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { EmptyState } from './components/common/EmptyState';
+import { KeyboardHelp } from './components/common/KeyboardHelp';
 import { useSearch } from './hooks/useSearch';
 import { useSidebar } from './hooks/useSidebar';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
 // Lazy loading de componentes pesados
 const ConditionDetail = lazy(() => import('./components/condition/ConditionDetail').then(module => ({ default: module.ConditionDetail })));
@@ -16,9 +18,11 @@ type View = 'home' | 'glossary';
 const App: FC = () => {
   const [selectedCondition, setSelectedCondition] = useState<Condition | null>(null);
   const [currentView, setCurrentView] = useState<View>('home');
+  const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
 
   const { searchQuery, setSearchQuery, filteredConditions } = useSearch(CONDITIONS);
   const sidebar = useSidebar(true);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSelectCondition = useCallback((condition: Condition) => {
     setSelectedCondition(condition);
@@ -43,8 +47,72 @@ const App: FC = () => {
     return undefined;
   }, [selectedCondition, currentView]);
 
+  // Atalhos de teclado
+  useKeyboardShortcuts([
+    {
+      key: 'k',
+      ctrl: true,
+      handler: () => {
+        searchInputRef.current?.focus();
+        if (!sidebar.isOpen) sidebar.open();
+      },
+      description: 'Focar no campo de busca',
+    },
+    {
+      key: 'b',
+      ctrl: true,
+      handler: sidebar.toggle,
+      description: 'Abrir/fechar menu lateral',
+    },
+    {
+      key: 'Escape',
+      handler: () => {
+        if (sidebar.isOpen) sidebar.close();
+        if (showKeyboardHelp) setShowKeyboardHelp(false);
+      },
+      description: 'Fechar menu ou modal',
+    },
+    {
+      key: 'g',
+      ctrl: true,
+      handler: handleSelectGlossary,
+      description: 'Abrir glossário',
+    },
+    {
+      key: '?',
+      ctrl: true,
+      handler: () => setShowKeyboardHelp(prev => !prev),
+      description: 'Mostrar atalhos de teclado',
+    },
+  ]);
+
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
+      {/* Skip Links para acessibilidade */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg"
+      >
+        Pular para conteúdo principal
+      </a>
+      <a
+        href="#sidebar-search"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg"
+      >
+        Pular para busca
+      </a>
+
+      {/* Live region para anúncios do screen reader */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {selectedCondition && `Condição selecionada: ${selectedCondition.title}`}
+        {filteredConditions.length > 0 && `${filteredConditions.length} condições encontradas`}
+      </div>
+
       <Sidebar
         isOpen={sidebar.isOpen}
         onClose={sidebar.close}
@@ -55,6 +123,7 @@ const App: FC = () => {
         onSelectCondition={handleSelectCondition}
         onSelectGlossary={handleSelectGlossary}
         isGlossaryActive={currentView === 'glossary'}
+        searchInputRef={searchInputRef}
       />
 
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -65,7 +134,7 @@ const App: FC = () => {
           subtitle={headerSubtitle}
         />
 
-        <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+        <div id="main-content" className="flex-1 overflow-y-auto p-6 bg-gray-50" tabIndex={-1}>
           <Suspense fallback={
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
@@ -89,6 +158,8 @@ const App: FC = () => {
           </Suspense>
         </div>
       </main>
+
+      <KeyboardHelp isOpen={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
     </div>
   );
 };

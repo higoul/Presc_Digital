@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, RefObject } from 'react';
 import { Condition } from '../../types';
 import { SearchIcon, BookOpenIcon, GlossaryIcon } from '../../assets/constants';
 import { ConditionListItem } from './ConditionListItem';
@@ -13,6 +13,7 @@ interface SidebarProps {
   onSelectCondition: (condition: Condition) => void;
   onSelectGlossary: () => void;
   isGlossaryActive: boolean;
+  searchInputRef?: RefObject<HTMLInputElement>;
 }
 
 export const Sidebar: FC<SidebarProps> = ({
@@ -25,6 +26,7 @@ export const Sidebar: FC<SidebarProps> = ({
   onSelectCondition,
   onSelectGlossary,
   isGlossaryActive,
+  searchInputRef,
 }) => {
   return (
     <aside
@@ -57,12 +59,17 @@ export const Sidebar: FC<SidebarProps> = ({
           </label>
           <input
             id="sidebar-search"
+            ref={searchInputRef}
             type="text"
             placeholder="Pesquisar condição ou CID..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+            aria-describedby="keyboard-shortcut-search"
           />
+          <span id="keyboard-shortcut-search" className="sr-only">
+            Pressione Ctrl+K para focar neste campo
+          </span>
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <SearchIcon />
           </div>
