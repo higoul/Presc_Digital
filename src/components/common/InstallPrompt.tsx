@@ -10,11 +10,22 @@ export const InstallPrompt: FC = () => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Verificar se o usuário já interagiu com o prompt antes
-    const hasInteracted = localStorage.getItem('pwa-install-prompt-interaction');
+    // Verificar se estamos no browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
 
-    if (hasInteracted) {
-      return; // Não mostrar novamente se já interagiu
+    // Verificar se o usuário já interagiu com o prompt antes
+    try {
+      const hasInteracted = localStorage.getItem('pwa-install-prompt-interaction');
+
+      if (hasInteracted) {
+        return; // Não mostrar novamente se já interagiu
+      }
+    } catch (error) {
+      // Se localStorage não estiver disponível, não mostrar o prompt
+      console.error('localStorage não disponível:', error);
+      return;
     }
 
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -40,24 +51,38 @@ export const InstallPrompt: FC = () => {
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    // Mostrar o prompt de instalação
-    deferredPrompt.prompt();
+    try {
+      // Mostrar o prompt de instalação
+      deferredPrompt.prompt();
 
-    // Aguardar a escolha do usuário
-    const { outcome } = await deferredPrompt.userChoice;
+      // Aguardar a escolha do usuário
+      const { outcome } = await deferredPrompt.userChoice;
 
-    // Marcar que o usuário interagiu
-    localStorage.setItem('pwa-install-prompt-interaction', 'true');
+      // Marcar que o usuário interagiu
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('pwa-install-prompt-interaction', 'true');
+      }
 
-    // Limpar o prompt
-    setDeferredPrompt(null);
-    setShowPrompt(false);
+      // Limpar o prompt
+      setDeferredPrompt(null);
+      setShowPrompt(false);
+    } catch (error) {
+      console.error('Erro ao instalar PWA:', error);
+      setShowPrompt(false);
+    }
   };
 
   const handleDismiss = () => {
-    // Marcar que o usuário recusou (não mostrar novamente)
-    localStorage.setItem('pwa-install-prompt-interaction', 'true');
-    setShowPrompt(false);
+    try {
+      // Marcar que o usuário recusou (não mostrar novamente)
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('pwa-install-prompt-interaction', 'true');
+      }
+      setShowPrompt(false);
+    } catch (error) {
+      console.error('Erro ao dispensar prompt:', error);
+      setShowPrompt(false);
+    }
   };
 
   // Não mostrar se não tiver prompt ou se já foi fechado
