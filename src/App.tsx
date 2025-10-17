@@ -8,6 +8,7 @@ import { KeyboardHelp } from './components/common/KeyboardHelp';
 import { useSearch } from './hooks/useSearch';
 import { useSidebar } from './hooks/useSidebar';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useDarkMode } from './hooks/useDarkMode';
 
 // Lazy loading de componentes pesados
 const ConditionDetail = lazy(() => import('./components/condition/ConditionDetail').then(module => ({ default: module.ConditionDetail })));
@@ -23,6 +24,7 @@ const App: FC = () => {
   const { searchQuery, setSearchQuery, selectedSpecialty, setSelectedSpecialty, filteredConditions } = useSearch(CONDITIONS);
   const sidebar = useSidebar(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { isDark, toggle: toggleDarkMode } = useDarkMode();
 
   const handleSelectCondition = useCallback((condition: Condition) => {
     setSelectedCondition(condition);
@@ -87,7 +89,7 @@ const App: FC = () => {
   ]);
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
       {/* Skip Links para acessibilidade */}
       <a
         href="#main-content"
@@ -134,19 +136,21 @@ const App: FC = () => {
           onToggleSidebar={sidebar.open}
           title={headerTitle}
           subtitle={headerSubtitle}
+          isDark={isDark}
+          onToggleDarkMode={toggleDarkMode}
         />
 
-        <div id="main-content" className="flex-1 overflow-y-auto p-6 bg-gray-50" tabIndex={-1}>
+        <div id="main-content" className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900" tabIndex={-1}>
           <Suspense fallback={
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                <p className="mt-4 text-gray-600">Carregando...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400 mx-auto"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Carregando...</p>
               </div>
             </div>
           }>
             {currentView === 'glossary' ? (
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <Glossary onBack={() => setCurrentView('home')} />
               </div>
             ) : selectedCondition ? (

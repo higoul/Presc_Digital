@@ -15,13 +15,13 @@ export const ConditionListItem: FC<ConditionListItemProps> = memo(
           onClick={() => onSelect(condition)}
           className={`w-full text-left p-3 rounded-lg transition-colors ${
             isSelected
-              ? 'bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-500'
-              : 'hover:bg-gray-50 text-gray-700'
+              ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold border-l-4 border-blue-500 dark:border-blue-400'
+              : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }`}
           aria-current={isSelected ? 'page' : undefined}
         >
           <div className="font-medium text-sm">{condition.title}</div>
-          <div className="text-xs text-gray-500 mt-1">CID: {condition.cid}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">CID: {condition.cid}</div>
         </button>
       </li>
     );

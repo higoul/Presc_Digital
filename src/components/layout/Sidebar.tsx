@@ -37,18 +37,18 @@ export const Sidebar: FC<SidebarProps> = ({
     <aside
       className={`${
         isOpen ? 'w-80' : 'w-0'
-      } bg-white shadow-lg transition-all duration-300 overflow-hidden flex flex-col`}
+      } bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 overflow-hidden flex flex-col`}
       aria-hidden={!isOpen}
       aria-label="Menu de navegação"
     >
-      <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-        <div className="flex items-center text-blue-600">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="flex items-center text-blue-600 dark:text-blue-400">
           <BookOpenIcon />
           <h1 className="text-xl font-bold ml-2">Guia de Condutas</h1>
         </div>
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors"
           aria-label="Recolher menu lateral"
           title="Recolher menu (Ctrl+B)"
         >
@@ -59,15 +59,15 @@ export const Sidebar: FC<SidebarProps> = ({
       </div>
 
       {/* Filtro de Especialidade */}
-      <div className="p-4 border-b border-gray-200">
-        <label htmlFor="specialty-filter" className="block text-xs font-semibold text-gray-500 uppercase mb-2">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <label htmlFor="specialty-filter" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
           Filtrar por Especialidade
         </label>
         <select
           id="specialty-filter"
           value={selectedSpecialty}
           onChange={(e) => onSpecialtyChange(e.target.value as Specialty | 'all')}
-          className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white"
+          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white dark:bg-gray-700 dark:text-gray-100"
         >
           <option value="all">Todas as Especialidades</option>
           {SPECIALTY_LIST.map((specialty) => (
@@ -78,7 +78,7 @@ export const Sidebar: FC<SidebarProps> = ({
         </select>
       </div>
 
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="relative">
           <label htmlFor="sidebar-search" className="sr-only">
             Pesquisar condição ou CID
@@ -90,13 +90,13 @@ export const Sidebar: FC<SidebarProps> = ({
             placeholder="Pesquisar condição ou CID..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+            className="w-full p-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
             aria-describedby="keyboard-shortcut-search"
           />
           <span id="keyboard-shortcut-search" className="sr-only">
             Pressione Ctrl+K para focar neste campo
           </span>
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
             <SearchIcon />
           </div>
         </div>
@@ -108,8 +108,8 @@ export const Sidebar: FC<SidebarProps> = ({
             onClick={onSelectGlossary}
             className={`w-full text-left p-3 rounded-lg transition-colors flex items-center ${
               isGlossaryActive
-                ? 'bg-blue-50 text-blue-700 font-semibold'
-                : 'hover:bg-gray-50 text-gray-700'
+                ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold'
+                : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
             }`}
             aria-current={isGlossaryActive ? 'page' : undefined}
           >
@@ -118,8 +118,8 @@ export const Sidebar: FC<SidebarProps> = ({
           </button>
         </div>
 
-        <div className="border-t border-gray-200 pt-4">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase mb-2 px-2">
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 px-2">
             Condições
           </h3>
           {filteredConditions.length > 0 ? (
@@ -134,7 +134,7 @@ export const Sidebar: FC<SidebarProps> = ({
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-gray-500 px-2">Nenhuma condição encontrada.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 px-2">Nenhuma condição encontrada.</p>
           )}
         </div>
       </nav>

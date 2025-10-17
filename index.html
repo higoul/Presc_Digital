@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prescrição Fácil Digital</title>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +21,21 @@
     ::-webkit-scrollbar-track {
       background: #f1f5f9;
     }
+    .dark ::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
     ::-webkit-scrollbar-thumb {
       background: #94a3b8;
       border-radius: 10px;
     }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+    }
     ::-webkit-scrollbar-thumb:hover {
       background: #475569;
+    }
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
     }
     .animate-fade-in {
       animation: fadeIn 0.3s ease-in-out;
