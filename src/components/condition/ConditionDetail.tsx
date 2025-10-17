@@ -10,7 +10,7 @@ interface ConditionDetailProps {
 
 export const ConditionDetail: FC<ConditionDetailProps> = ({ condition }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 max-w-5xl mx-auto">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8 max-w-5xl mx-auto transition-colors">
       <section className="space-y-8">
         <InfoBlock title="Diagnóstico Diferencial" icon={<BalanceIcon />}>
           <p className="text-lg">{condition.differentialDiagnosis}</p>
