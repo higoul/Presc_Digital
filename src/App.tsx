@@ -29,12 +29,22 @@ const App: FC = () => {
   const handleSelectCondition = useCallback((condition: Condition) => {
     setSelectedCondition(condition);
     setCurrentView('home');
-  }, []);
+
+    // Fechar sidebar em mobile após selecionar condição
+    if (window.innerWidth < 768) {
+      sidebar.close();
+    }
+  }, [sidebar]);
 
   const handleSelectGlossary = useCallback(() => {
     setCurrentView('glossary');
     setSelectedCondition(null);
-  }, []);
+
+    // Fechar sidebar em mobile após selecionar glossário
+    if (window.innerWidth < 768) {
+      sidebar.close();
+    }
+  }, [sidebar]);
 
   const headerTitle = useMemo(() => {
     if (currentView === 'glossary') return 'Glossário';
@@ -140,17 +150,17 @@ const App: FC = () => {
           onToggleDarkMode={toggleDarkMode}
         />
 
-        <div id="main-content" className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900" tabIndex={-1}>
+        <div id="main-content" className="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6 bg-gray-50 dark:bg-gray-900" tabIndex={-1}>
           <Suspense fallback={
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400 mx-auto"></div>
-                <p className="mt-4 text-gray-600 dark:text-gray-400">Carregando...</p>
+                <p className="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-400">Carregando...</p>
               </div>
             </div>
           }>
             {currentView === 'glossary' ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6">
                 <Glossary onBack={() => setCurrentView('home')} />
               </div>
             ) : selectedCondition ? (

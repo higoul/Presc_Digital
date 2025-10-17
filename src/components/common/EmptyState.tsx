@@ -13,11 +13,11 @@ export const EmptyState: FC<EmptyStateProps> = memo(({
   description,
 }) => {
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex items-center justify-center h-full px-4">
       <div className="text-center">
         <div className="flex justify-center mb-4 text-blue-500 dark:text-blue-400">{icon}</div>
-        <h3 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 mt-4">{title}</h3>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">{description}</p>
+        <h3 className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-200 mt-4">{title}</h3>
+        <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">{description}</p>
       </div>
     </div>
   );
