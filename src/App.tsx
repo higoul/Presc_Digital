@@ -5,7 +5,6 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { EmptyState } from './components/common/EmptyState';
 import { KeyboardHelp } from './components/common/KeyboardHelp';
-// import { InstallPrompt } from './components/common/InstallPrompt';
 import { useSearch } from './hooks/useSearch';
 import { useSidebar } from './hooks/useSidebar';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -167,7 +166,6 @@ const App: FC = () => {
       </main>
 
       <KeyboardHelp isOpen={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
-      {/* <InstallPrompt /> */}
     </div>
   );
 };
