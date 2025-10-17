@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { Condition } from '../../types';
 import { SearchIcon, BookOpenIcon, GlossaryIcon } from '../../assets/constants';
+import { ConditionListItem } from './ConditionListItem';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -91,20 +92,12 @@ export const Sidebar: FC<SidebarProps> = ({
           {filteredConditions.length > 0 ? (
             <ul className="space-y-1" role="list">
               {filteredConditions.map((condition) => (
-                <li key={condition.id}>
-                  <button
-                    onClick={() => onSelectCondition(condition)}
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
-                      selectedCondition?.id === condition.id
-                        ? 'bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-500'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                    aria-current={selectedCondition?.id === condition.id ? 'page' : undefined}
-                  >
-                    <div className="font-medium text-sm">{condition.title}</div>
-                    <div className="text-xs text-gray-500 mt-1">CID: {condition.cid}</div>
-                  </button>
-                </li>
+                <ConditionListItem
+                  key={condition.id}
+                  condition={condition}
+                  isSelected={selectedCondition?.id === condition.id}
+                  onSelect={onSelectCondition}
+                />
               ))}
             </ul>
           ) : (

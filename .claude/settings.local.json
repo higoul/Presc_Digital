@@ -5,7 +5,12 @@
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: componentizar App.tsx e organizar estrutura\n\nBREAKING CHANGES:\n- Reorganizada estrutura de pastas com src/\n- App.tsx refatorado de 200+ linhas para 85 linhas\n- Componentes extraídos:\n  * Sidebar - menu lateral com busca e navegação\n  * Header - cabeçalho responsivo\n  * ConditionDetail - detalhes da condição\n  * TreatmentBlock - bloco de tratamento\n  * InfoBlock - bloco de informação reutilizável\n  * EmptyState - estado vazio\n  * Glossary - movido para src/components/glossary/\n\nCustom Hooks:\n- useSearch - gerencia busca e filtragem\n- useSidebar - gerencia estado do menu lateral\n\nMelhorias:\n- Separação de responsabilidades (SRP)\n- Componentes reutilizáveis\n- Hooks customizados para lógica\n- Acessibilidade: aria-labels, sr-only, aria-current\n- Props tipadas com TypeScript\n- Código mais testável e manutenível\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git tag:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nperf: adicionar otimizações de performance\n\nMelhorias implementadas:\n- React.memo em componentes que renderizam listas\n  * ConditionListItem: evita re-render de 93+ itens\n  * Header, EmptyState: evita re-renders desnecessários\n  \n- useCallback para estabilizar handlers\n  * handleSelectCondition\n  * handleSelectGlossary\n  * Previne re-criação de funções a cada render\n\n- useMemo para valores computados\n  * headerTitle e headerSubtitle\n  * Evita recálculos desnecessários\n\n- Lazy loading com code splitting\n  * ConditionDetail: 2.25 kB chunk separado\n  * Glossary: 6.30 kB chunk separado\n  * Bundle principal reduzido\n  * Componentes carregam apenas quando necessário\n\nResultados:\n- Menos re-renders em componentes filhos\n- Bundle inicial menor\n- Melhor performance com 93+ condições\n- Tempo de carregamento inicial reduzido\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

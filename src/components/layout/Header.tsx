@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import { Condition } from '../../types';
+import React, { FC, memo } from 'react';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -8,7 +7,7 @@ interface HeaderProps {
   subtitle?: string;
 }
 
-export const Header: FC<HeaderProps> = ({
+export const Header: FC<HeaderProps> = memo(({
   sidebarOpen,
   onToggleSidebar,
   title,
@@ -33,4 +32,6 @@ export const Header: FC<HeaderProps> = ({
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';

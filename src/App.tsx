@@ -1,13 +1,15 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useCallback, useMemo, FC, lazy, Suspense } from 'react';
 import { CONDITIONS } from '../data/conditions';
 import { Condition } from './types';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
-import { ConditionDetail } from './components/condition/ConditionDetail';
-import { Glossary } from './components/glossary/Glossary';
 import { EmptyState } from './components/common/EmptyState';
 import { useSearch } from './hooks/useSearch';
 import { useSidebar } from './hooks/useSidebar';
+
+// Lazy loading de componentes pesados
+const ConditionDetail = lazy(() => import('./components/condition/ConditionDetail').then(module => ({ default: module.ConditionDetail })));
+const Glossary = lazy(() => import('./components/glossary/Glossary').then(module => ({ default: module.Glossary })));
 
 type View = 'home' | 'glossary';
 
@@ -18,28 +20,28 @@ const App: FC = () => {
   const { searchQuery, setSearchQuery, filteredConditions } = useSearch(CONDITIONS);
   const sidebar = useSidebar(true);
 
-  const handleSelectCondition = (condition: Condition) => {
+  const handleSelectCondition = useCallback((condition: Condition) => {
     setSelectedCondition(condition);
     setCurrentView('home');
-  };
+  }, []);
 
-  const handleSelectGlossary = () => {
+  const handleSelectGlossary = useCallback(() => {
     setCurrentView('glossary');
     setSelectedCondition(null);
-  };
+  }, []);
 
-  const getHeaderTitle = () => {
+  const headerTitle = useMemo(() => {
     if (currentView === 'glossary') return 'Glossário';
     if (selectedCondition) return selectedCondition.title;
     return 'Prescrição Fácil Digital';
-  };
+  }, [currentView, selectedCondition]);
 
-  const getHeaderSubtitle = () => {
+  const headerSubtitle = useMemo(() => {
     if (selectedCondition && currentView === 'home') {
       return `CID: ${selectedCondition.cid}`;
     }
     return undefined;
-  };
+  }, [selectedCondition, currentView]);
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -59,23 +61,32 @@ const App: FC = () => {
         <Header
           sidebarOpen={sidebar.isOpen}
           onToggleSidebar={sidebar.open}
-          title={getHeaderTitle()}
-          subtitle={getHeaderSubtitle()}
+          title={headerTitle}
+          subtitle={headerSubtitle}
         />
 
         <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
-          {currentView === 'glossary' ? (
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <Glossary onBack={() => setCurrentView('home')} />
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-4 text-gray-600">Carregando...</p>
+              </div>
             </div>
-          ) : selectedCondition ? (
-            <ConditionDetail condition={selectedCondition} />
-          ) : (
-            <EmptyState
-              title="Bem-vindo ao Guia de Condutas"
-              description="Selecione uma condição no menu lateral para começar"
-            />
-          )}
+          }>
+            {currentView === 'glossary' ? (
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <Glossary onBack={() => setCurrentView('home')} />
+              </div>
+            ) : selectedCondition ? (
+              <ConditionDetail condition={selectedCondition} />
+            ) : (
+              <EmptyState
+                title="Bem-vindo ao Guia de Condutas"
+                description="Selecione uma condição no menu lateral para começar"
+              />
+            )}
+          </Suspense>
         </div>
       </main>
     </div>

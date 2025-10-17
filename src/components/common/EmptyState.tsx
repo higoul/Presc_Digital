@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, memo } from 'react';
 import { BookOpenIcon } from '../../assets/constants';
 
 interface EmptyStateProps {
@@ -7,7 +7,7 @@ interface EmptyStateProps {
   description: string;
 }
 
-export const EmptyState: FC<EmptyStateProps> = ({
+export const EmptyState: FC<EmptyStateProps> = memo(({
   icon = <BookOpenIcon />,
   title,
   description,
@@ -21,4 +21,6 @@ export const EmptyState: FC<EmptyStateProps> = ({
       </div>
     </div>
   );
-};
+});
+
+EmptyState.displayName = 'EmptyState';
