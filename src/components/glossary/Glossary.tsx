@@ -1,7 +1,7 @@
 import React, { useState, useMemo, FC } from 'react';
-import { GLOSSARY_TERMS } from './data/glossary';
-import { SearchIcon } from './constants';
-import { GlossaryTerm } from './types';
+import { GLOSSARY_TERMS } from '../../../data/glossary';
+import { SearchIcon } from '../../assets/constants';
+import { GlossaryTerm } from '../../types';
 
 interface GlossaryProps {
   onBack: () => void;
