@@ -10,10 +10,29 @@ export interface TreatmentBlock {
   medications: Medication[];
 }
 
+export type Specialty =
+  | 'Dermatologia'
+  | 'Otorrinolaringologia'
+  | 'Gastroenterologia'
+  | 'Infectologia/DSTs'
+  | 'Pneumologia'
+  | 'Cardiologia'
+  | 'Neurologia'
+  | 'Ginecologia/Obstetrícia'
+  | 'Urologia'
+  | 'Oftalmologia'
+  | 'Reumatologia/Ortopedia'
+  | 'Parasitologia'
+  | 'Alergias e Imunologia'
+  | 'Psiquiatria'
+  | 'Hematologia'
+  | 'Clínica Geral';
+
 export interface Condition {
   id: number;
   title: string;
   cid: string;
+  specialty?: Specialty;
   differentialDiagnosis: string;
   initialConduct: string[];
   nonPharmaTreatment: string[];

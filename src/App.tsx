@@ -20,7 +20,7 @@ const App: FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
 
-  const { searchQuery, setSearchQuery, filteredConditions } = useSearch(CONDITIONS);
+  const { searchQuery, setSearchQuery, selectedSpecialty, setSelectedSpecialty, filteredConditions } = useSearch(CONDITIONS);
   const sidebar = useSidebar(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -118,6 +118,8 @@ const App: FC = () => {
         onClose={sidebar.close}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        selectedSpecialty={selectedSpecialty}
+        onSpecialtyChange={setSelectedSpecialty}
         filteredConditions={filteredConditions}
         selectedCondition={selectedCondition}
         onSelectCondition={handleSelectCondition}

@@ -1,13 +1,16 @@
 import React, { FC, memo, RefObject } from 'react';
-import { Condition } from '../../types';
+import { Condition, Specialty } from '../../types';
 import { SearchIcon, BookOpenIcon, GlossaryIcon } from '../../assets/constants';
 import { ConditionListItem } from './ConditionListItem';
+import { SPECIALTY_LIST } from '../../utils/specialtyMapping';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  selectedSpecialty: Specialty | 'all';
+  onSpecialtyChange: (specialty: Specialty | 'all') => void;
   filteredConditions: Condition[];
   selectedCondition: Condition | null;
   onSelectCondition: (condition: Condition) => void;
@@ -21,6 +24,8 @@ export const Sidebar: FC<SidebarProps> = ({
   onClose,
   searchQuery,
   onSearchChange,
+  selectedSpecialty,
+  onSpecialtyChange,
   filteredConditions,
   selectedCondition,
   onSelectCondition,
@@ -51,6 +56,26 @@ export const Sidebar: FC<SidebarProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+      </div>
+
+      {/* Filtro de Especialidade */}
+      <div className="p-4 border-b border-gray-200">
+        <label htmlFor="specialty-filter" className="block text-xs font-semibold text-gray-500 uppercase mb-2">
+          Filtrar por Especialidade
+        </label>
+        <select
+          id="specialty-filter"
+          value={selectedSpecialty}
+          onChange={(e) => onSpecialtyChange(e.target.value as Specialty | 'all')}
+          className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white"
+        >
+          <option value="all">Todas as Especialidades</option>
+          {SPECIALTY_LIST.map((specialty) => (
+            <option key={specialty} value={specialty}>
+              {specialty}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="p-4 border-b border-gray-200">
