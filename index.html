@@ -39,14 +39,20 @@
   <script type="module" src="/index.tsx"></script>
 
   <!-- PWA Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => console.log('Service Worker registrado:', reg.scope))
-          .catch(err => console.log('Erro ao registrar Service Worker:', err));
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(reg => reg.unregister());
       });
-    }
-  </script>
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => {
+          reg.update();
+          console.log('Service Worker atualizado:', reg.scope);
+        })
+        .catch(err => console.log('Erro ao registrar Service Worker:', err));
+    });
+  }
+</script>
 </body>
 </html>
