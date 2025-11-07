@@ -21,7 +21,6 @@ export const ConditionListItem: FC<ConditionListItemProps> = memo(
           aria-current={isSelected ? 'page' : undefined}
         >
           <div className="font-medium text-sm">{condition.title}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">CID: {condition.cid}</div>
         </button>
       </li>
     );

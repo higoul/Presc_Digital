@@ -34,26 +34,37 @@ export const Sidebar: FC<SidebarProps> = ({
   searchInputRef,
 }) => {
   return (
-    <aside
-      className={`${
-        isOpen ? 'w-80' : 'w-0'
-      } bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 overflow-hidden flex flex-col`}
-      aria-hidden={!isOpen}
-      aria-label="Menu de navegação"
-    >
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <div className="flex items-center text-blue-600 dark:text-blue-400">
+    <>
+      {/* Overlay para mobile */}
+      {isOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`${
+          isOpen 
+            ? 'w-80 translate-x-0' 
+            : 'w-0 -translate-x-full md:w-80 md:translate-x-0'
+        } fixed md:relative top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 overflow-hidden flex flex-col z-40`}
+        aria-hidden={!isOpen}
+        aria-label="Menu de navegação"
+      >
+      <div className="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between safe-area-inset-top">
+        <div className="flex items-center text-blue-600 dark:text-blue-400 min-w-0 flex-1">
           <BookOpenIcon />
-          <h1 className="text-xl font-bold ml-2">Guia de Condutas</h1>
+          <h1 className="text-lg md:text-xl font-bold ml-2 truncate">Guia de Condutas</h1>
         </div>
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors"
-          aria-label="Recolher menu lateral"
-          title="Recolher menu (Ctrl+B)"
+          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors flex-shrink-0 ml-2"
+          aria-label="Fechar menu lateral"
+          title="Fechar menu"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -138,6 +149,7 @@ export const Sidebar: FC<SidebarProps> = ({
           )}
         </div>
       </nav>
-    </aside>
+      </aside>
+    </>
   );
 };

@@ -18,12 +18,13 @@ export const Header: FC<HeaderProps> = memo(({
   onToggleDarkMode,
 }) => {
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm p-4 flex items-center justify-between transition-colors">
-      <div className="flex items-center">
+    <header className="bg-white dark:bg-gray-800 shadow-sm p-3 md:p-4 flex items-center justify-between transition-colors safe-area-inset-top">
+      <div className="flex items-center min-w-0 flex-1">
+        {/* Botão menu apenas em desktop quando sidebar fechado */}
         {!sidebarOpen && (
           <button
             onClick={onToggleSidebar}
-            className="mr-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="hidden md:block mr-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex-shrink-0"
             aria-label="Abrir menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,9 +32,15 @@ export const Header: FC<HeaderProps> = memo(({
             </svg>
           </button>
         )}
-        <div>
-          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 dark:text-gray-100">{title}</h2>
-          {subtitle && <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
+        <div className="min-w-0 flex-1">
+          <h2 className="text-base md:text-xl lg:text-2xl font-bold text-gray-800 dark:text-gray-100 truncate">
+            {title}
+          </h2>
+          {subtitle && (
+            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useMemo, FC, lazy, Suspense, useRef } from 'react';
-import { CONDITIONS } from '../data/conditions';
 import { Condition } from './types';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
+import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { EmptyState } from './components/common/EmptyState';
 import { KeyboardHelp } from './components/common/KeyboardHelp';
-import { useSearch } from './hooks/useSearch';
+import { useSearchOptimized } from './hooks/useSearchOptimized';
 import { useSidebar } from './hooks/useSidebar';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -21,7 +21,17 @@ const App: FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
 
-  const { searchQuery, setSearchQuery, selectedSpecialty, setSelectedSpecialty, filteredConditions } = useSearch(CONDITIONS);
+  // Usar hook otimizado com carregamento dinâmico
+  const { 
+    searchQuery, 
+    setSearchQuery, 
+    selectedSpecialty, 
+    setSelectedSpecialty, 
+    filteredConditions,
+    isLoading: conditionsLoading,
+    error: conditionsError
+  } = useSearchOptimized();
+  
   const sidebar = useSidebar(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
@@ -46,18 +56,31 @@ const App: FC = () => {
     }
   }, [sidebar]);
 
+  const handleGoBack = useCallback(() => {
+    if (selectedCondition) {
+      setSelectedCondition(null);
+    } else if (currentView === 'glossary') {
+      setCurrentView('home');
+    }
+  }, [selectedCondition, currentView]);
+
+  const handleOpenSearch = useCallback(() => {
+    searchInputRef.current?.focus();
+    if (!sidebar.isOpen) {
+      sidebar.open();
+    }
+  }, [sidebar]);
+
   const headerTitle = useMemo(() => {
     if (currentView === 'glossary') return 'Glossário';
     if (selectedCondition) return selectedCondition.title;
     return 'Prescrição Fácil Digital';
   }, [currentView, selectedCondition]);
 
+  // CID removido do header - agora exibido apenas na página de detalhes
   const headerSubtitle = useMemo(() => {
-    if (selectedCondition && currentView === 'home') {
-      return `CID: ${selectedCondition.cid}`;
-    }
     return undefined;
-  }, [selectedCondition, currentView]);
+  }, []);
 
   // Atalhos de teclado
   useKeyboardShortcuts([
@@ -150,32 +173,59 @@ const App: FC = () => {
           onToggleDarkMode={toggleDarkMode}
         />
 
-        <div id="main-content" className="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6 bg-gray-50 dark:bg-gray-900" tabIndex={-1}>
-          <Suspense fallback={
+        <div id="main-content" className="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6 bg-gray-50 dark:bg-gray-900 mobile-content-padding" tabIndex={-1}>
+          {conditionsError && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+              <p className="text-red-800 dark:text-red-200">
+                Erro ao carregar condições: {conditionsError.message}
+              </p>
+            </div>
+          )}
+          {conditionsLoading && filteredConditions.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400 mx-auto"></div>
-                <p className="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-400">Carregando...</p>
+                <p className="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-400">Carregando condições...</p>
               </div>
             </div>
-          }>
-            {currentView === 'glossary' ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6">
-                <Glossary onBack={() => setCurrentView('home')} />
+          ) : (
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 dark:border-blue-400 mx-auto"></div>
+                  <p className="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-400">Carregando...</p>
+                </div>
               </div>
-            ) : selectedCondition ? (
-              <ConditionDetail condition={selectedCondition} />
-            ) : (
-              <EmptyState
-                title="Bem-vindo ao Guia de Condutas"
-                description="Selecione uma condição no menu lateral para começar"
-              />
-            )}
-          </Suspense>
+            }>
+              {currentView === 'glossary' ? (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6">
+                  <Glossary onBack={() => setCurrentView('home')} />
+                </div>
+              ) : selectedCondition ? (
+                <ConditionDetail condition={selectedCondition} />
+              ) : (
+                <EmptyState
+                  title="Bem-vindo ao Guia de Condutas"
+                  description="Selecione uma condição no menu lateral para começar"
+                />
+              )}
+            </Suspense>
+          )}
         </div>
       </main>
 
       <KeyboardHelp isOpen={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
+
+      {/* Barra de navegação inferior para mobile */}
+      <MobileBottomNav
+        onToggleMenu={sidebar.toggle}
+        onOpenSearch={handleOpenSearch}
+        onOpenGlossary={handleSelectGlossary}
+        onGoBack={handleGoBack}
+        canGoBack={!!selectedCondition || currentView === 'glossary'}
+        isMenuOpen={sidebar.isOpen}
+        hasSelectedCondition={!!selectedCondition}
+      />
     </div>
   );
 };
